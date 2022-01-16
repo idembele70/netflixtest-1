@@ -58,8 +58,8 @@ export const deleteMovies = async (id, dispatch) => {
   }
 }
 /* ADDED by ikd */
-const publicRequest = axios.create({
-  baseURL: "http://localhost:8800",
+export const publicRequest = axios.create({
+  baseURL: "http://localhost:8800/api",
   headers: {
     token: 'Bearer ' + JSON.parse(localStorage.getItem('user')).accessToken,
   },
@@ -69,9 +69,11 @@ export const updateMovies = async (movie, dispatch) => {
   console.log(movie)
   dispatch(updateMoviesStart())
   try {
-    const { data } = await publicRequest.put('/api/movies/' + movie._id, movie)
+    const { data } = await publicRequest.put('/movies/' + movie._id, movie)
     dispatch(updateMoviesSuccess(data))
   } catch (err) {
     dispatch(updateMoviesFailure())
   }
 }
+// UPDATE ENDPOINT
+/* ADDED by ikd endpoint */
