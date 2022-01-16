@@ -1,11 +1,42 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import './movie.css'
 import { Publish } from '@material-ui/icons'
-
+import { useContext, useEffect,useState } from 'react'
+import { updateMovies } from '../../context/movieContext/apiCalls'
+import { MovieContext } from '../../context/movieContext/MovieContext'
 export default function Product() {
   const location = useLocation()
+  const history = useHistory()
   const movie = location.movie
-  console.log(movie)
+  const [data, setData] = useState({
+title: "",
+year: "",
+genre: "",
+limit: ""
+  })
+  const {dispatch} = useContext(MovieContext)
+  useEffect(() => {
+    setData(movie)
+  }, [movie])
+
+  const handleChange = (e) => {
+    const {name,type,value,files} = e.target
+    switch (type) {
+      case files:
+        setData({...data,[name]: files[0]})
+        break;
+      default:
+        setData({...data,[name]: value})
+        break;
+    }
+  }
+
+  const handleCreate = (e) => {
+    e.preventDefault()
+    updateMovies(data,dispatch)
+  }
+  
+  
   return (
     <div className='product'>
       <div className='productTitleContainer'>
@@ -41,20 +72,20 @@ export default function Product() {
         </div>
       </div>
       <div className='productBottom'>
-        <form className='productForm'>
+        <form className='productForm' onSubmit={handleCreate}>
           <div className='productFormLeft'>
             <label>Movie Title</label>
-            <input type='text' placeholder={movie.title} />
+            <input name="title" type='text' value={data.title} onChange={handleChange} />
             <label>Year</label>
-            <input type='text' placeholder={movie.year} />
+            <input name="year" type='text' value={data.year} onChange={handleChange} />
             <label>Genre</label>
-            <input type='text' placeholder={movie.genre} />
+            <input name="genre" type='text' value={data.genre} onChange={handleChange} />
             <label>Limit</label>
-            <input type='text' placeholder={movie.limit} />
+            <input name="limit" type='text' value={data.limit} onChange={handleChange} />
             <label>Trailer</label>
-            <input type='file' placeholder={movie.trailer} />
+            <input type='file' onChange={handleChange} />
             <label>Video</label>
-            <input type='file' placeholder={movie.video} />
+            <input type='file' onChange={handleChange} />
           </div>
           <div className='productFormRight'>
             <div className='productUpload'>
@@ -64,7 +95,7 @@ export default function Product() {
               </label>
               <input type='file' id='file' style={{ display: 'none' }} />
             </div>
-            <button className='productButton'>Update</button>
+            <button type="submit" className='productButton'>Update</button>
           </div>
         </form>
       </div>

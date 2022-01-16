@@ -8,6 +8,9 @@ import {
   getMoviesFailure,
   getMoviesStart,
   getMoviesSuccess,
+  updateMoviesStart,
+  updateMoviesSuccess,
+  updateMoviesFailure,
 } from './MovieActions'
 import axios from 'axios'
 
@@ -52,5 +55,23 @@ export const deleteMovies = async (id, dispatch) => {
     dispatch(deleteMoviesSuccess(id))
   } catch (err) {
     dispatch(deleteMoviesFailure())
+  }
+}
+/* ADDED by ikd */
+const publicRequest = axios.create({
+  baseURL: "http://localhost:8800",
+  headers: {
+    token: 'Bearer ' + JSON.parse(localStorage.getItem('user')).accessToken,
+  },
+})
+// UPDATE
+export const updateMovies = async (movie, dispatch) => {
+  console.log(movie)
+  dispatch(updateMoviesStart())
+  try {
+    const { data } = await publicRequest.put('/api/movies/' + movie._id, movie)
+    dispatch(updateMoviesSuccess(data))
+  } catch (err) {
+    dispatch(updateMoviesFailure())
   }
 }
